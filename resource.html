@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .resource-list {
+            list-style: none;
+        }
+
+        .resource-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .skill-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .skill-section:last-child {
+            border-bottom: none;
+        }
+
+        .skill-name {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .resource-link {
+            color: #667eea;
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 13px;
+        }
+
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+
+        .no-resources {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-book"></i> Learning Resources
+            </h1>
+            <p>Find learning materials for any skill</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <form method="POST">
+                <input type="text" name="job" placeholder="Enter Job Role (e.g., Frontend Developer, Python Developer...)" required autofocus>
+                <button type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if searched_job %}
+        <div class="results-section">
+            {% if no_job %}
+                <p class="no-resources">
+                    <i class="fas fa-info-circle"></i> Job role "{{ searched_job }}" not found in dataset. 
+                    <br>Please try one of these roles:
+                    <br>• Frontend Developer
+                    <br>• Backend Developer
+                    <br>• Data Scientist
+                    <br>• DevOps Engineer
+                    <br>• Mobile Developer
+                </p>
+            {% elif resources %}
+                <h3><i class="fas fa-graduation-cap"></i> Resources for <strong>"{{ searched_job }}"</strong></h3>
+                {% for skill, skill_resources in resources.items() %}
+                    <div class="skill-section">
+                        <h4 class="skill-name">
+                            <i class="fas fa-tag"></i> {{ skill }}
+                        </h4>
+                        <ul class="resource-list">
+                            {% for res in skill_resources %}
+                                <li class="resource-item">
+                                    <div class="resource-title">{{ res.resource_title }}</div>
+                                    <a href="{{ res.resource_link }}" target="_blank" class="resource-link">
+                                        <i class="fas fa-external-link-alt"></i> {{ res.resource_link }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-resources">
+                    <i class="fas fa-info-circle"></i> No resources found for the skills in "{{ searched_job }}". 
+                    <br>The job exists but resources need to be added to the dataset.
+                </p>
+            {% endif %}
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

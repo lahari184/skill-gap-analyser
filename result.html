@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Gap Analysis Result</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .job-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .job-title {
+            font-size: 28px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Similarity Score Section */
+        .score-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .score-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .score-circle.high {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .score-circle.medium {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .score-circle.low {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .score-text {
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* Skills Sections */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .skills-section {
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .skills-section.matched {
+            background: #f0f9ff;
+            border-left: 5px solid #10b981;
+        }
+
+        .skills-section.missing {
+            background: #fef2f2;
+            border-left: 5px solid #ef4444;
+        }
+
+        .skills-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skills-section.matched h3 {
+            color: #10b981;
+        }
+
+        .skills-section.missing h3 {
+            color: #ef4444;
+        }
+
+        .skill-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 5px 5px 5px 0;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .skill-badge.matched {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .skill-badge.missing {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .chart-section h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        canvas {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        @media (max-width: 768px) {
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Skill Gap Analysis Results</h1>
+            <p>Your personalized skill assessment</p>
+        </div>
+
+        <!-- Results Card -->
+        <div class="result-card">
+            <!-- Job Info -->
+            <div class="job-info">
+                <div class="job-title">{{ job }}</div>
+            </div>
+
+            <!-- Score Section -->
+            <div class="score-section">
+                <div class="score-label">Your Match Score</div>
+                {% if similarity >= 75 %}
+                    <div class="score-circle high">{{ similarity }}%</div>
+                    <div class="score-text">Excellent Match! You're well-prepared for this role.</div>
+                {% elif similarity >= 50 %}
+                    <div class="score-circle medium">{{ similarity }}%</div>
+                    <div class="score-text">Good Progress! Focus on the missing skills below.</div>
+                {% else %}
+                    <div class="score-circle low">{{ similarity }}%</div>
+                    <div class="score-text">Continue Learning! Work on the missing skills.</div>
+                {% endif %}
+            </div>
+
+            <!-- Skills Assessment -->
+            <div class="skills-grid">
+                <!-- Matched Skills -->
+                <div class="skills-section matched">
+                    <h3>✓ Matched Skills ({{ matched_skills|length }})</h3>
+                    {% if matched_skills %}
+                        {% for skill in matched_skills %}
+                            <span class="skill-badge matched">{{ skill }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: #666;">No matched skills yet</p>
+                    {% endif %}
+                </div>
+
+                <!-- Missing Skills -->
+                <div class="skills-section missing">
+                    <h3>✗ Missing Skills ({{ missing_skills|length }})</h3>
+                    {% if missing_skills %}
+                        {% for skill in missing_skills %}
+                            <span class="skill-badge missing">{{ skill }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: #666;">All required skills matched!</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <h3>Skills Overview</h3>
+                <canvas id="skillsChart"></canvas>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <a href="/dashboard" class="btn btn-primary">Analyze Another Job</a>
+                <a href="{{ url_for('roadmap', job_role=job) }}" class="btn btn-secondary">Analyze Roadmap</a>
+                <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prepare data
+        var matchedCount = parseInt('{{ matched_skills|length }}');
+        var missingCount = parseInt('{{ missing_skills|length }}');
+        var totalSkills = matchedCount + missingCount;
+
+        // Create Chart
+        var ctx = document.getElementById('skillsChart').getContext('2d');
+        var skillsChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Matched Skills', 'Missing Skills'],
+                datasets: [{
+                    data: [matchedCount, missingCount],
+                    backgroundColor: ['#10b981', '#ef4444'],
+                    borderColor: ['#059669', '#dc2626'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 600
+                            },
+                            padding: 20
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

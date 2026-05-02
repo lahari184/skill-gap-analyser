@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test Result - Skill Gap Analyzer</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-center {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar-right a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-right a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .result-header {
+            margin-bottom: 30px;
+        }
+
+        .result-header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .skill-name {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        /* Score Display */
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            font-size: 2em;
+            font-weight: 700;
+            position: relative;
+            background: conic-gradient(
+                #4CAF50 0% {{ percentage }}%,
+                #e0e0e0 {{ percentage }}% 100%
+            );
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: white;
+            border-radius: 50%;
+            top: 20px;
+            left: 20px;
+        }
+
+        .score-content {
+            position: relative;
+            z-index: 1;
+            color: #333;
+        }
+
+        .score-percentage {
+            font-size: 2.5em;
+            color: #667eea;
+        }
+
+        .score-fraction {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Performance Message */
+        .performance-message {
+            margin-bottom: 30px;
+        }
+
+        .performance-message h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .performance-message p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 10px;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-circle::before {
+                width: 120px;
+                height: 120px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-chart-line"></i>
+            Skill Gap Analyzer
+        </div>
+        <div class="navbar-center">
+            Test Results
+        </div>
+        <div class="navbar-right">
+            <a href="/tests"><i class="fas fa-list"></i> All Tests</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="result-card">
+            <div class="result-header">
+                <h1>Test Completed!</h1>
+                <div class="skill-name">{{ skill_name|title }} Assessment</div>
+            </div>
+
+            <div class="score-circle">
+                <div class="score-content">
+                    <div class="score-percentage">{{ percentage }}%</div>
+                    <div class="score-fraction">{{ score }}/{{ total }}</div>
+                </div>
+            </div>
+
+            <div class="performance-message">
+                {% if percentage >= 80 %}
+                <h2><i class="fas fa-trophy"></i> Excellent Performance!</h2>
+                <p>You have strong knowledge in {{ skill_name }}. Keep up the great work!</p>
+                {% elif percentage >= 60 %}
+                <h2><i class="fas fa-thumbs-up"></i> Good Job!</h2>
+                <p>You have a solid foundation in {{ skill_name }}. Consider exploring advanced topics.</p>
+                {% elif percentage >= 40 %}
+                <h2><i class="fas fa-book"></i> Keep Learning!</h2>
+                <p>You have basic knowledge of {{ skill_name }}. Focus on building your skills further.</p>
+                {% else %}
+                <h2><i class="fas fa-graduation-cap"></i> Time to Study!</h2>
+                <p>{{ skill_name }} is an area where you can improve. Check out our resources to get started.</p>
+                {% endif %}
+            </div>
+
+            <div class="action-buttons">
+                <a href="/test/{{ skill_name }}" class="btn">
+                    <i class="fas fa-redo"></i> Retake Test
+                </a>
+                <a href="/resources" class="btn btn-secondary">
+                    <i class="fas fa-book"></i> View Resources
+                </a>
+                {% if percentage < 70 %}
+                <a href="/roadmap" class="btn btn-success">
+                    <i class="fas fa-road"></i> Get Roadmap
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

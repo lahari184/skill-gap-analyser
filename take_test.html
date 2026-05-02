@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ skill_name|title }} Test - Skill Gap Analyzer</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-center {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar-right a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-right a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .test-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .test-header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .test-info {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Questions */
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .difficulty-beginner {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .difficulty-intermediate {
+            background-color: #FF9800;
+            color: white;
+        }
+
+        .difficulty-advanced {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* MCQ Options */
+        .options {
+            margin-bottom: 20px;
+        }
+
+        .option {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .option label {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+            display: inline-block;
+            width: calc(100% - 30px);
+        }
+
+        .option label:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Code Input */
+        .code-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+
+        .code-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #666;
+            margin-left: 20px;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 10px;
+            }
+
+            .test-header {
+                padding: 20px;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .btn-secondary {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-chart-line"></i>
+            Skill Gap Analyzer
+        </div>
+        <div class="navbar-center">
+            {{ skill_name|title }} Test
+        </div>
+        <div class="navbar-right">
+            <a href="/tests"><i class="fas fa-arrow-left"></i> Back to Tests</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="test-header">
+            <h1>{{ skill_name|title }} Assessment</h1>
+            <p class="test-info">Answer all questions to the best of your ability. Your results will help identify areas for improvement.</p>
+        </div>
+
+        <form method="POST" action="/submit_test/{{ skill_name }}">
+            {% for question in questions %}
+            <div class="question-card">
+                <div class="question-number">
+                    Question {{ loop.index }}
+                    <span class="difficulty-badge difficulty-{{ question.difficulty }}">
+                        {{ question.difficulty|title }}
+                    </span>
+                </div>
+
+                <div class="question-text">
+                    {{ question.text }}
+                </div>
+
+                {% if question.type == 'mcq' and question.options %}
+                <div class="options">
+                    {% for option in question.options %}
+                    <div class="option">
+                        <input type="radio" id="q{{ question.id }}_{{ loop.index }}" 
+                               name="question_{{ question.id }}" value="{{ option }}">
+                        <label for="q{{ question.id }}_{{ loop.index }}">{{ option }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% elif question.type == 'code' %}
+                <textarea class="code-input" name="question_{{ question.id }}" 
+                          placeholder="Write your code here..."></textarea>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="submit-section">
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i> Submit Test
+                </button>
+                <a href="/tests" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
